@@ -1,24 +1,24 @@
 // Write your "actions" router here!
 const express = require('express');
+const router = express.Router();
+const actionsMiddleware = require('./actions-middlware')
 const Post = require('./actions-model');
 
-const router = express.Router();
 
-router.get('/', async (req, res) => {
+
+router.use(actionsMiddleware.limiter)
+
+router.get('/', async (req, res, next) => {
     try {
         // Fetch all actions from the database
         const actions = await Post.get();
         res.json(actions);
     } catch (err) {
-        res.status(500).json({
-            message: "The actions information could not be retrieved",
-            err: err.message,
-            stack: err.stack,
-        });
+       next(err)
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
     try {
         // Fetch the action with the specified ID from the database
         const action = await Post.get(req.params.id);
@@ -32,12 +32,7 @@ router.get('/:id', async (req, res) => {
             res.json(action);
         }
     } catch (err) {
-        // If an error occurs during the database operation, respond with a 500 status code along with the error details
-        res.status(500).json({
-            message: "The action information could not be retrieved",
-            err: err.message,
-            stack: err.stack,
-        });
+      next(err)
     }
 });
 

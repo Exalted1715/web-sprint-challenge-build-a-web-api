@@ -7,8 +7,8 @@ const server = express();
 server.use(express.json())
 server.use(cors())
 
-//const {logger} = require('./actions/actions-middlware')
-//server.use(logger)
+const {limiter, errorHandler} = require('./actions/actions-middlware')
+server.use(limiter, errorHandler)
 
 const projectsRouter = require('./projects/projects-router')
 server.use('/api/projects', projectsRouter)
