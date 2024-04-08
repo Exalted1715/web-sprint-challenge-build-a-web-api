@@ -117,6 +117,26 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+router.get('/:id/actions', async (req, res) => {
+    try {
+        const project = await Post.get(req.params.id);
+        if (!project) {
+            return res.status(404).json({
+                message: "The project with the specified ID does not exist"
+            });
+        } else {
+            // Retrieve actions belonging to the project
+            const actions = await Post.getProjectActions(req.params.id);
+            res.json(actions);
+        }
+    } catch (err) {
+        res.status(500).json({
+            message: "The actions information could not be retrieved",
+            err: err.message,
+            stack: err.stack,
+        });
+    }
+});
 
 
 
