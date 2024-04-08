@@ -93,6 +93,31 @@ router.put('/:id', (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+    try {
+        const project = await Post.get(req.params.id); // Retrieve the project
+        if (!project) {
+            // If the project doesn't exist, return 404
+            return res.status(404).json({
+                message: "The project with the specified ID does not exist"
+            });
+        } else {
+            // If the project exists, remove it from the database
+            await Post.remove(req.params.id);
+            // Respond with no response body
+            res.status(204).end();
+        }
+    } catch (err) {
+        // If an error occurs, respond with a 500 status code
+        res.status(500).json({
+            message: "The project could not be removed",
+            err: err.message,
+            stack: err.stack,
+        });
+    }
+});
+
+
 
 
 
